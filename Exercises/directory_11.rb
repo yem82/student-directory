@@ -16,11 +16,8 @@ end
 def load_students(filename = "students.csv")
   file = File.open(filename, "r")
   file.readlines.each do |line|
-  @name, @country_of_birth, @age, @height, @hobbies, cohort_choice = line.chomp.split(",")
-    @students << {
-      name: @name, country_of_birth: @country_of_birth, age: @age,
-      height: @height, hobbies: @hobbies, cohort_choice: cohort_choice.to_sym
-    }
+  @name, @country_of_birth, @age, @height, @hobbies, @cohort_choice = line.chomp.split(",")
+  store_data
   end
   file.close
 end
@@ -92,23 +89,28 @@ def student_info
     @height = STDIN.gets.chomp
     puts "Enter a hobby:"
     @hobbies = STDIN.gets.chomp
-    puts "Enter student's cohort:"
-    cohort(STDIN.gets.chomp)
+    student_cohort
   end
 end
 
-def cohort(cohort_choice)
+def student_cohort
+    puts "Enter student's cohort:"
+    @cohort_choice = STDIN.gets.chomp
     cohorts = %w[red blue green]
-    cohort_choice = "blue" if cohort_choice.empty?
-    while !cohorts.include?(cohort_choice)
+    @cohort_choice = "blue" if @cohort_choice.empty?
+    while !cohorts.include?(@cohort_choice)
       puts "incorrect cohort: please choose either 'red', 'blue' or 'green'\nEnter a cohort:"
-      cohort_choice = STDIN.gets.chomp
+      @cohort_choice = STDIN.gets.chomp
     end
-    @students << {
-      name: @name, cohort_choice: cohort_choice.to_sym, country_of_birth: @country_of_birth,
-      age: @age, height: @height, hobbies: @hobbies
-    }
+    store_data
     student_count
+end
+
+def store_data
+  @students << {
+    name: @name, cohort_choice: @cohort_choice.to_sym, country_of_birth: @country_of_birth,
+    age: @age, height: @height, hobbies: @hobbies
+  }
 end
 
 def student_count
