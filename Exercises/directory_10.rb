@@ -34,46 +34,50 @@ end
 def input_students
   puts "Please enter the names of the students along their details"
   puts "To finish, just hit return twice when asked for name input\nEnter a name:"
-  #get the first name
-  name = gets.chomp.capitalize
+  student_info
+end
 
-  #while the name is not empty, repeat this code
-  while !name.empty? do
+def student_info
+  @name = gets.chomp.capitalize
+  while !@name.empty? do
     puts "Enter country of birth:"
-    country_of_birth = gets.chomp.capitalize
-    loop do
-      puts "Enter a cohort:"
-      cohort = gets.chomp
-      cohort = "blue" if cohort.size == 0
-      cohorts = %w[red blue green]
-      if cohorts.include?(cohort)
-        puts "Enter student's age:"
-        age = gets.chomp
-        puts "Enter student's height (e.g., 6'4\")"
-        height = gets.chomp
-        puts "Enter a hobby:"
-        hobbies = gets.chomp
-        #add the student hash to the array
-        @students << {
-          name: name, cohort: cohort.to_sym, country_of_birth: country_of_birth,
-          age: age, height: height, hobbies: hobbies
-        }
-        break
-      else
-        puts "incorrect cohort: please choose either 'red', 'blue' or 'green'"
-      end
-    end
+    @country_of_birth = gets.chomp.capitalize
+    puts "Enter student's age:"
+    @age = gets.chomp
+    puts "Enter student's height (e.g., 6'4\")"
+    @height = gets.chomp
+    puts "Enter a hobby:"
+    @hobbies = gets.chomp
+    puts "Enter student's cohort:"
+    cohort(gets.chomp)
+  end
+end
 
+def cohort(cohort_choice)
+    cohorts = %w[red blue green]
+    cohort_choice = "blue" if cohort_choice.size == 0
+    while !cohorts.include?(cohort_choice)
+      puts "incorrect cohort: please choose either 'red', 'blue' or 'green'"
+      puts "Enter a cohort:"
+      cohort_choice = gets.chomp
+    end
+    @students << {
+      name: @name, cohort_choice: cohort_choice.to_sym, country_of_birth: @country_of_birth,
+      age: @age, height: @height, hobbies: @hobbies
+    }
+    student_count
+end
+
+def student_count
     if @students.count == 1
       puts "Now we have details for 1 student"
     else
       puts "Now we have details for #{@students.count} students"
     end
     puts "Please enter the next student's name"
-    name = gets.chomp.capitalize
-  end
-  #return the array of students
-  @students
+    @name = gets.chomp.capitalize
+    @students
+    interactive_menu if @name.empty?
 end
 
 def print_header
@@ -83,7 +87,7 @@ end
 
 def print_students_list
   @students.each do |student|
-    puts "name: #{student[:name]}; country of birth: #{student[:country_of_birth]}; age: #{student[:age]}; height: #{student[:height]}; hobbies: #{student[:hobbies]}; (#{student[:cohort]} cohort)".center(50)
+    puts "name: #{student[:name]}; country of birth: #{student[:country_of_birth]}; age: #{student[:age]}; height: #{student[:height]}; hobbies: #{student[:hobbies]}; (#{student[:cohort_choice]} cohort)".center(50)
   end
 end
 
