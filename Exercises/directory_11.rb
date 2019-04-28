@@ -48,11 +48,12 @@ def interactive_menu
 end
 
 def print_menu
+  puts "Enter a number to choose from the following:"
   puts "1. Input the students"
   puts "2. Show the students"
   puts "3. Save the list to students.csv"
   puts "4. Load the list from students.csv"
-  puts "9. Exit" # 9 because we'll be adding more items
+  puts "9. Exit"
 end
 
 def show_students
@@ -69,9 +70,12 @@ def process(selection)
       show_students
     when "3"
       save_students
+      puts "Save successful"
     when "4"
       load_students
+      puts "Load successful"
     when "9"
+      puts "Come back anytime!"
       exit
     else
       puts "I don't know what you mean, try again"
