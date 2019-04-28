@@ -2,7 +2,6 @@
 def save_students
   #open the file for writing
   file = File.open("students.csv", "w")
-  #iterate over the array of students
   @students.each do |student|
     student_data = [
       student[:name], student[:country_of_birth], student[:age],
@@ -14,8 +13,8 @@ def save_students
   file.close
 end
 
-def load_students
-  file = File.open("students.csv", "r")
+def load_students(filename = "students.csv")
+  file = File.open(filename, "r")
   file.readlines.each do |line|
   @name, @country_of_birth, @age, @height, @hobbies, cohort_choice = line.chomp.split(",")
     @students << {
@@ -24,6 +23,18 @@ def load_students
     }
   end
   file.close
+end
+
+def try_load_students
+  filename = ARGV.first #first argument from the commmand line
+  return if filename.nil? #get out of the method if no filename
+  if File.exists?(filename) #if it exists
+    load_students(filename)
+      puts "Loaded #{@students.count} from #{filename}"
+  else
+    puts "Sorry, #{filename} doesn't exist."
+    exit
+  end
 end
 
 def input_students
@@ -35,7 +46,7 @@ end
 def interactive_menu
   loop do
     print_menu
-    process(gets.chomp)
+    process(STDIN.gets.chomp)
   end
 end
 
@@ -71,27 +82,27 @@ def process(selection)
 end
 
 def student_info
-  @name = gets.chomp.capitalize
+  @name = STDIN.gets.chomp.capitalize
   while !@name.empty? do
     puts "Enter country of birth:"
-    @country_of_birth = gets.chomp.capitalize
+    @country_of_birth = STDIN.gets.chomp.capitalize
     puts "Enter student's age:"
-    @age = gets.chomp
+    @age = STDIN.gets.chomp
     puts "Enter student's height (e.g., 6'4\")"
-    @height = gets.chomp
+    @height = STDIN.gets.chomp
     puts "Enter a hobby:"
-    @hobbies = gets.chomp
+    @hobbies = STDIN.gets.chomp
     puts "Enter student's cohort:"
-    cohort(gets.chomp)
+    cohort(STDIN.gets.chomp)
   end
 end
 
 def cohort(cohort_choice)
     cohorts = %w[red blue green]
-    cohort_choice = "blue" if cohort_choice.size == 0
+    cohort_choice = "blue" if cohort_choice.empty?
     while !cohorts.include?(cohort_choice)
       puts "incorrect cohort: please choose either 'red', 'blue' or 'green'\nEnter a cohort:"
-      cohort_choice = gets.chomp
+      cohort_choice = STDIN.gets.chomp
     end
     @students << {
       name: @name, cohort_choice: cohort_choice.to_sym, country_of_birth: @country_of_birth,
@@ -107,7 +118,7 @@ def student_count
       puts "Now we have details for #{@students.count} students"
     end
     puts "Please enter the next student's name"
-    @name = gets.chomp.capitalize
+    @name = STDIN.gets.chomp.capitalize
     @students
     interactive_menu if @name.empty?
 end
@@ -127,4 +138,5 @@ def print_footer
   puts "Overall, we have #{@students.count} great students".center(50)
 end
 
+try_load_students
 interactive_menu
